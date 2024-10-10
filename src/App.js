@@ -1,31 +1,42 @@
 // src/App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import ProductList from './components/ProductList';
-import Cart from './components/Cart';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import ProductList from './Component/ProductList';
+import Cart from './Component/Cart';
+import ContactForm from './Component/ContactForm';
 import './App.css';
 
-
 const App = () => {
-    const [cart, setCart] = useState([]);
-    const products = [
-        { id: 1, name: 'Salmon', price: 10 },
-        { id: 2, name: 'Tuna', price: 15 },
-        { id: 3, name: 'Trout', price: 12 },
-    ];
+    const [cartItems, setCartItems] = useState([]);
 
     const addToCart = (product) => {
-        setCart([...cart, product]);
+        setCartItems([...cartItems, product]);
+    };
+
+    const removeFromCart = (id) => {
+        setCartItems(cartItems.filter(item => item.id !== id));
     };
 
     return (
         <Router>
-            <Header cartCount={cart.length} />
-            <Routes>
-                <Route path="/" element={<ProductList products={products} addToCart={addToCart} />} />
-                <Route path="/cart" element={<Cart cartItems={cart} />} />
-            </Routes>
+            <header>
+                <h1>Fish Sales</h1>
+                <nav>
+                    <Link to="/">Home</Link>
+                    <Link to="/cart">Cart ({cartItems.length})</Link>
+                    <Link to="/contact">Contact</Link>
+                </nav>
+            </header>
+            <main>
+                <Routes>
+                    <Route path="/" element={<ProductList addToCart={addToCart} />} />
+                    <Route path="/cart" element={<Cart cartItems={cartItems} removeFromCart={removeFromCart} />} />
+                    <Route path="/contact" element={<ContactForm />} />
+                </Routes>
+            </main>
+            <footer>
+                <p>&copy; 2024 Fish Sales</p>
+            </footer>
         </Router>
     );
 };
